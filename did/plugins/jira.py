@@ -204,15 +204,26 @@ class JiraResolved(Stats):
     def fetch(self):
         log.info("Searching for issues resolved in {0} by {1}".format(
             self.parent.project, self.user))
-        query = (
-            "(assignee = '{0}' OR tester = '{1})' AND "
-            "resolved >= {2} AND resolved <= {3}".format(
-                self.user.email,
-                self.options.since, self.options.until))
-        if self.parent.project:
-            query = query + " AND project = '{0}'".format(
+        try:
+            query = (
+                "(assignee = '{0}' OR tester = '{1}') AND "
+                "resolved >= {2} AND resolved <= {3}".format(
+                    self.user.email,
+                    self.options.since, self.options.until))
+            if self.parent.project:
+                query = query + " AND project = '{0}'".format(
+                        self.parent.project)
+            self.stats = Issue.search(query, stats=self)
+        except:
+            query = (
+                "(assignee = '{0}' ) AND "
+                "resolved >= {2} AND resolved <= {3}".format(
+                    self.user.email,
+                    self.options.since, self.options.until))
+            if self.parent.project:
+                query = query + " AND project = '{0}'".format(
                     self.parent.project)
-        self.stats = Issue.search(query, stats=self)
+            self.stats = Issue.search(query, stats=self)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

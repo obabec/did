@@ -226,9 +226,20 @@ class IssuesCommented(Stats):
     def fetch(self):
         log.info("Searching for Issues commented by {0}".format(
             self.user))
-        results = self.parent.gitlab.search(
+        results_tmp = self.parent.gitlab.search(
             self.user.login, self.options.since, self.options.until,
             'Note', 'commented on')
+
+        results = []
+        for item in results_tmp:
+            breakVar = False
+            for comment in results:
+                if (item['target_title'] == comment['target_title']):
+                    breakVar = True
+            if (breakVar):
+                continue
+            results.append(item)
+
         self.stats = [
             Note(issue, self.parent.gitlab)
             for issue in results
@@ -269,9 +280,20 @@ class MergeRequestsCommented(Stats):
     def fetch(self):
         log.info("Searching for MergeRequests commented by {0}".format(
             self.user))
-        results = self.parent.gitlab.search(
+        results_tmp = self.parent.gitlab.search(
             self.user.login, self.options.since, self.options.until,
             'Note', 'commented on')
+
+        results = []
+        for item in results_tmp:
+            breakVar = False
+            for comment in results:
+                if (item['target_title'] == comment['target_title']):
+                    breakVar = True
+            if (breakVar):
+                continue
+            results.append(item)
+
         self.stats = [
             Note(issue, self.parent.gitlab)
             for issue in results
@@ -356,7 +378,7 @@ class GitLabStats(StatsGroup):
                 name="Merge requests created on {0}".format(option)),
             MergeRequestsCommented(
                 option=option + "-merge-requests-commented", parent=self,
-                name="Issues commented on {0}".format(option)),
+                name="Merge requests commented on {0}".format(option)),
             MergeRequestsApproved(
                 option=option + "-merge-requests-approved", parent=self,
                 name="Merge requests approved on {0}".format(option)),

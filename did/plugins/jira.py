@@ -208,7 +208,7 @@ class JiraResolved(Stats):
             query = (
                 "(assignee = '{0}' OR tester = '{1}') AND "
                 "resolved >= {2} AND resolved <= {3}".format(
-                    self.user.email,
+                    self.user.email, self.user.email,
                     self.options.since, self.options.until))
             if self.parent.project:
                 query = query + " AND project = '{0}'".format(
@@ -218,7 +218,7 @@ class JiraResolved(Stats):
             query = (
                 "(assignee = '{0}' ) AND "
                 "resolved >= {2} AND resolved <= {3}".format(
-                    self.user.email,
+                    self.user.email, self.user.email,
                     self.options.since, self.options.until))
             if self.parent.project:
                 query = query + " AND project = '{0}'".format(
